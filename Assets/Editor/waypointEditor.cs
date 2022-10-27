@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+
+[InitializeOnLoad()]
+public class waypointEditor{
+    [DrawGizmo(GizmoType.NonSelected | GizmoType.Selected | GizmoType.Pickable)]
+    public static void OnDrawSceneGizmo(Waypoint waypoint, GizmoType gizmoType) {
+        if((gizmoType & GizmoType.Selected) != 0){
+            Gizmos.color = Color.yellow;
+        }else{
+            Gizmos.color = Color.yellow * 0.5f;
+        }
+
+
+        Gizmos.DrawSphere(waypoint.transform.position, 0.1f);
+
+        Gizmos.color = Color.white;
+
+        Gizmos.DrawLine(waypoint.transform.position + (waypoint.transform.right *  waypoint.width / 2), waypoint.transform.position - (waypoint.transform.right *  waypoint.width / 2));
+
+        if(waypoint.previousWaypont != null){
+            Gizmos.color = Color.gray;
+            Vector3 offset = waypoint.transform.right * waypoint.width / 2f;
+            Vector3 offsetTo = waypoint.previousWaypont.transform.right *  waypoint.previousWaypont.width / 2f;
+
+            Gizmos.DrawLine(waypoint.transform.position + offset, waypoint.previousWaypont.transform.position + offsetTo);
+        }
+
+        if(waypoint.nextWaypoint != null){
+            Gizmos.color = Color.green;
+            Vector3 offset = waypoint.transform.right * -waypoint.width / 2f;
+            Vector3 offsetTo = waypoint.nextWaypoint.transform.right * -waypoint.nextWaypoint.width / 2f;
+
+            Gizmos.DrawLine(waypoint.transform.position + offset, waypoint.nextWaypoint.transform.position + offsetTo);
+        }
+
+        if(waypoint.branches != null){
+            foreach(Waypoint branch in waypoint.branches)
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(waypoint.transform.position, branch.transform.position);
+            }
+        }
+
+
+    }
+}
